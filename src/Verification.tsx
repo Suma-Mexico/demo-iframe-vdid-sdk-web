@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { WebVerification } from "vdid-sdk-web";
 import warning from "./assets/warning_suma.webp";
 
@@ -66,6 +66,24 @@ export const Verification = () => {
       }
     }
   };
+
+
+  // Escucha de mensajes enviados desde el iframe, en este caso se espera una respuesta con la propiedad completed en true para indicar que el proceso de verificación ha finalizado
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Información enviada desde el iframe
+      const data = event.data;
+
+      // Respuesta: { completed: true }
+      if (data?.completed) console.log(data);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   return (
     <>
